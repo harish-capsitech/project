@@ -27,7 +27,7 @@ const SignUp = () => {
             setError(null);
             setPassError(null);
             setEmailError(null);
-            const response = await fetch("http://localhost:3200/add", {
+            const response = await fetch("http://localhost:3300/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

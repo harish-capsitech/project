@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom"
-import Navbar from "./components/Navbar"
+// import Navbar from "./components/Navbar"
 import SignUp from "./components/SignUp"
 import Login from "./components/Login"
 import Dashboard from "./components/Dashboard"
@@ -9,10 +9,10 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Protected><Navbar/><Dashboard /></Protected>} />
-      <Route path="/login" element={<><Navbar/><Login /></>} />
-      <Route path="/signup" element={<><Navbar/><SignUp /></>} />
-      <Route path="/*" element={<Protected><Navbar/><Dashboard /></Protected>}/>
+      <Route path="/" element={<Protected><Dashboard /></Protected>} />
+      <Route path="/login" element={<><Login /></>} />
+      <Route path="/signup" element={<><SignUp /></>} />
+      <Route path="/*" element={<Protected><Dashboard /></Protected>}/>
     </Routes>
   )
 }

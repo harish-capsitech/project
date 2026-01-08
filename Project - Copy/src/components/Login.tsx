@@ -5,7 +5,7 @@ const Login = () => {
     const [userData, setUserData] = useState<{fullName: string; email: string; password: string} | null>({fullName: "", email: "", password: ""});
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        const response = await fetch("http://localhost:3200/login", {
+        const response = await fetch("http://localhost:3300/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
