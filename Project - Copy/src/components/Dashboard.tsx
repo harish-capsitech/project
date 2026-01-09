@@ -13,7 +13,7 @@ const Dashboard = () => {
       if (data.success) {
         setUser({
           fullName: data.result.fullName,
-          email: data.result.email,
+          email: data.result.email
         });
       }
     };
@@ -26,9 +26,7 @@ const Dashboard = () => {
       <div className="w-full flex justify-center h-screen items-center bg-gray-200">
         <div className="bg-white p-8 rounded shadow-md w-100 my-5 flex flex-col gap-4">
           <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
-
-          <p>
-            <strong>Name:</strong> {user.fullName}
+          <p><strong>Name:</strong> {user.fullName}
           </p>
           <p>
             <strong>Email:</strong> {user.email}

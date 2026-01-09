@@ -14,7 +14,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin:'http://localhost:5174',
   credentials: true,
 }));
 app.use(cookieParser());
@@ -41,7 +41,7 @@ function verifyToken(req, res, next) {
 }
 
 
-// User Routes using after login complete
+// User Routes
 app.get("/users", verifyToken, async (req, res) => {
   const db = await connection();
   const collection = db.collection(collectionName);
@@ -53,18 +53,19 @@ app.get("/users", verifyToken, async (req, res) => {
 
   if (!user) {
     return res.status(404).send({ success: false });
+  }else{
+    res.send({
+      success: true,
+      result: {
+        fullName: user.fullName,
+        email: user.email
+      }
+    });
   }
 
-  res.send({
-    success: true,
-    result: {
-      fullName: user.fullName,
-      email: user.email
-    }
-  });
 });
 
-// sign up route 
+
 app.post("/add", async (req, res) => {
   const db = await connection();
   const collection = db.collection(collectionName);
@@ -79,7 +80,6 @@ app.post("/add", async (req, res) => {
     res.status(400).send({ success: false, message: "Required all fields" });
   }
 });
-// login validation check route
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -100,7 +100,7 @@ app.post("/login", async (req, res) => {
     fullName: user.fullName,
     email: user.email
   };
-// jwt token route
+
   jwt.sign(tokenData, "Google", { expiresIn: "2d" }, (err, token) => {
     if (err) {
       res.status(500).send({ success: false });
@@ -116,7 +116,6 @@ app.post("/login", async (req, res) => {
     }
   });
 });
-
 
 
 app.listen(3300);

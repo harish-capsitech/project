@@ -2,18 +2,22 @@ import { Link, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
 const SignUp = () => {
     const [error, setError] = useState<string | null>(null);
+    const [nameError, setNameError] = useState<string | null>(null);
     const [passError, setPassError] = useState<string | null>(null);
-    const [emailError, setEmailError] = useState<string | null>(null);
+    const [emailError, setEmailError2] = useState<string | null>(null);
+    const [emailError2, setEmailError] = useState<string | null>(null);
+    const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const [userData, setUserData] = useState<{fullName: string; email: string; password: string} | null>({fullName: "", email: "", password: ""});
     const navigate = useNavigate();
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
-        const fullName = (form.elements.namedItem("fullName") as HTMLInputElement).value;
+        const fullName = (form.elements.namedItem("fullName") as HTMLInputElement).value.replace(/\s+/g, " ").trim();
         const email = (form.elements.namedItem("email") as HTMLInputElement).value;
         const password = (form.elements.namedItem("password") as HTMLInputElement).value;
-        const passRegex = /^\d{6}$/;
+        const passRegex = /^.{6,}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const fullNameRegex = /^[a-zA-Z]+( [a-zA-Z]+)+$/;
         if (!fullName || !email || !password) {
             setError("All fields are required.");
             return;
@@ -23,10 +27,16 @@ const SignUp = () => {
         }else if(!emailRegex.test(email)){
             setEmailError("Please enter a valid email address.");
             return;
-        }else{
-            setError(null);
-            setPassError(null);
-            setEmailError(null);
+        }else if(!fullNameRegex.test(fullName)){
+            setNameError("Please enter a valid full Name.");
+            return;
+        }
+        else{
+            setError("");
+            setPassError("");
+            setEmailError("");
+            setNameError("");
+            setEmailError2("");
             const response = await fetch("http://localhost:3300/add", {
                 method: "POST",
                 headers: {
@@ -36,11 +46,14 @@ const SignUp = () => {
             });
             const data = await response.json();
             if (data.success) {
-                alert("Sign up successful! Please log in.");
+                setSuccessMsg("Sign up successful! Please log in.");
                 form.reset();
-                navigate("/login");
+                setTimeout(() => {
+                    navigate("/login");
+                    setSuccessMsg(null);
+                }, 1000);
             } else {
-                setError(data.message || "Sign up failed. Please try again.");
+                setEmailError2(data.message);
             }   
         }
     }
@@ -55,15 +68,20 @@ const SignUp = () => {
         <div className="bg-gray-200 h-screen w-full flex items-center justify-center">
             <div className="bg-white p-8 rounded shadow-md w-96">
                 <h2 className="text-xl font-bold mb-4">Sign Up</h2>
+                <h1 className="text-green-500">{successMsg}</h1>
                 <form onSubmit={handleSignUp}>
                     <div className="mb-4">
                         <label htmlFor="name" className="block text-gray-700">Name</label>
                         <input type="text" name="fullName" onChange={(e)=>setUserData({...(userData || {fullName: "", email: "", password: ""}), fullName:e.target.value})} id="name" className="w-full px-3 py-2 border rounded" />
+                        <p className="text-red-500">{nameError}</p>
                     </div>
                     <div className="mb-4">
                         <label htmlFor="email" className="block text-gray-700">Email</label>
                         <input type="email" name="email" onChange={(e)=>setUserData({...(userData || {fullName: "", email: "", password: ""}), email:e.target.value})} id="email" className="w-full px-3 py-2 border rounded" />
-                        <p className="text-red-500">{emailError}</p>
+                        <p className="text-red-500">
+                            {emailError} {emailError2}
+                        </p>
+                       
                     </div>
                     <div className="mb-4">
                         <label htmlFor="password" className="block text-gray-700">Password</label>
