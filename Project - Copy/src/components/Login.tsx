@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 const Login = () => {
     const navigate = useNavigate();
-    const [userData, setUserData] = useState<{fullname: string; email: string; password: string} | null>({fullname: "", email: "", password: ""});
+    const [userData, setUserData] = useState<{fullName: string; email: string; password: string} | null>({fullName: "", email: "", password: ""});
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         const response = await fetch("http://localhost:3300/login", {
@@ -14,9 +14,11 @@ const Login = () => {
         });
         const data = await response.json();
         if(data.success){
-            localStorage.setItem("login", userData?.email || "" );
-            localStorage.setItem("fullname", data.user.fullname);
+            // localStorage.setItem("login", userData?.email || "" );
+            localStorage.setItem("fullName", data.user.fullName);
             localStorage.setItem("login", data.user.email);
+            localStorage.setItem("loggedIn", "true");
+
 
             document.cookie = "token="+data.token
             navigate("/");
@@ -38,12 +40,12 @@ const Login = () => {
                 <form>
                     <div className="mb-4">
                         <label htmlFor="email" className="block text-gray-700">Email</label>
-                        <input type="email" name="email" onChange={(e)=>setUserData({...(userData || {fullname: "", email: "", password: ""}), email:e.target.value})} id="email" className="w-full px-3 py-2 border rounded" />
+                        <input type="email" name="email" onChange={(e)=>setUserData({...(userData || {fullName: "", email: "", password: ""}), email:e.target.value})} id="email" className="w-full px-3 py-2 border rounded" />
                         <p className="text-red-500"></p>
                     </div>
                     <div className="mb-4">
                         <label htmlFor="password" className="block text-gray-700">Password</label>
-                        <input type="password" name="password" onChange={(e)=>setUserData({...(userData || {fullname: "", email: "", password: ""}), password:e.target.value})} id="password" className="w-full px-3 py-2 border rounded" />
+                        <input type="password" name="password" onChange={(e)=>setUserData({...(userData || {fullName: "", email: "", password: ""}), password:e.target.value})} id="password" className="w-full px-3 py-2 border rounded" />
                         <p className="text-red-500"></p>
                     </div>
                     <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600" onClick={handleLogin}>Login</button>

@@ -4,6 +4,9 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const { ObjectId } = require("mongodb");
+const bcrypt = require("bcrypt");
+
+
 
 
 const url = "mongodb://localhost:27017";
@@ -53,17 +56,17 @@ app.get("/users", verifyToken, async (req, res) => {
 
   if (!user) {
     return res.status(404).send({ success: false });
-  }else{
-    res.send({
-      success: true,
-      result: {
-        fullName: user.fullName,
-        email: user.email
-      }
-    });
   }
 
+  res.send({
+    success: true,
+    result: {
+      fullName: user.fullName,
+      email: user.email
+    }
+  });
 });
+
 
 
 app.post("/add", async (req, res) => {
@@ -74,7 +77,13 @@ app.post("/add", async (req, res) => {
   if (emailExists) {
     return res.status(400).send({ success: false, message: "Email already exists" });
   } else if (data && data.fullName && data.email && data.password) {
-    const result = await collection.insertOne(data);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const userData = {
+      fullName: data.fullName,
+      email: data.email,
+      password: hashedPassword
+    };
+    const result = await collection.insertOne(userData);
     res.status(201).send({ success: true, result });
   } else {
     res.status(400).send({ success: false, message: "Required all fields" });
@@ -86,9 +95,16 @@ app.post("/login", async (req, res) => {
   const db = await connection();
   const collection = db.collection(collectionName);
 
-  const user = await collection.findOne({ email, password });
+  const user = await collection.findOne({ email });
 
   if (!user) {
+    return res.status(400).send({
+      success: false,
+      message: "Invalid email or password"
+    });
+  }
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
     return res.status(400).send({
       success: false,
       message: "Invalid email or password"
