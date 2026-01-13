@@ -20,15 +20,27 @@ const SignUp = () => {
         const fullNameRegex = /^[a-zA-Z]+( [a-zA-Z]+)+$/;
         if (!fullName || !email || !password) {
             setError("All fields are required.");
+            setPassError("");
+            setEmailError("");
+            setNameError("");
             return;
         }else if(!passRegex.test(password)){
             setPassError("Password must be at least 6 characters long.");
+            setError("");
+            setEmailError("");
+            setNameError("");
             return;
         }else if(!emailRegex.test(email)){
             setEmailError("Please enter a valid email address.");
+            setError("");
+            setPassError("");
+            setNameError("");
             return;
         }else if(!fullNameRegex.test(fullName)){
             setNameError("Please enter a valid full Name.");
+            setError("");
+            setEmailError("");
+            setPassError("");
             return;
         }
         else{
@@ -37,24 +49,29 @@ const SignUp = () => {
             setEmailError("");
             setNameError("");
             setEmailError2("");
-            const response = await fetch("http://localhost:3300/api/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ fullName, email, password })
-            });
-            const data = await response.json();
-            if (data.success) {
-                setSuccessMsg("Sign up successful! Please log in.");
-                form.reset();
-                setTimeout(() => {
-                    navigate("/login");
-                    setSuccessMsg(null);
-                }, 1000);
-            } else {
-                setEmailError2(data.message);
-            }   
+            try{
+                const response = await fetch("http://localhost:3300/api/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ fullName, email, password })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    setSuccessMsg("Sign up successful! Please log in.");
+                    form.reset();
+                    setTimeout(() => {
+                        navigate("/login");
+                        setSuccessMsg(null);
+                    }, 1000);
+                } else {
+                    setEmailError2(data.message);
+                }  
+            }catch(error){
+                setError("An error occurred. Please try again later.");
+                console.error(error);
+            }
         }
     }
     useEffect(() => {
@@ -98,5 +115,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
-
+export default SignUp;
