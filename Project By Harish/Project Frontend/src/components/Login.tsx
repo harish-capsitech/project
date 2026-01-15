@@ -93,7 +93,7 @@ const Login = () => {
               />
               <span onClick={passwordShow} className="absolute right-5 bottom-2.5">
                 <FontAwesomeIcon
-                  icon={passwordVisible ? faEyeSlash : faEye}
+                  icon={passwordVisible ? faEye : faEyeSlash}
                   className="cursor-pointer"
                 />
               </span>
@@ -120,3 +120,4 @@ const Login = () => {
 };
 
 export default Login;
+
