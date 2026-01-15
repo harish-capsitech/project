@@ -113,7 +113,7 @@ const SignUp = () => {
                         <input type={passwordVisible ? "text" : "password"} name="password" onChange={(e)=>setUserData({...(userData || {fullName: "", email: "", password: ""}), password:e.target.value})} id="password" className="w-full px-3 py-2 border rounded" />
                         <span onClick={passwordShow} className="absolute right-5 bottom-2.5">
                             <FontAwesomeIcon
-                            icon={passwordVisible ? faEyeSlash : faEye}
+                            icon={passwordVisible ? faEye : faEyeSlash}
                             className="cursor-pointer"
                             />
                         </span>
@@ -130,3 +130,4 @@ const SignUp = () => {
 }
 
 export default SignUp;
+
